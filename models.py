@@ -16,7 +16,8 @@ class Cupcake(db.Model):
     flavor = db.Column(db.Text, nullable=False)
     size = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Float, nullable=False)
-    image = db.Column(db.Text, default='https://tinyurl.com/demo-cupcake')
+    image = db.Column(db.Text, nullable=False, default='https://tinyurl.com/demo-cupcake')
+    # this is not defaulting because it is returning an empty string. Not sure why. 
     
     def serialize(self): 
         return {

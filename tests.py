@@ -48,65 +48,65 @@ class CupcakeViewsTestCase(TestCase):
 
         db.session.rollback()
 
-    # def test_list_cupcakes(self):
-    #     with app.test_client() as client:
-    #         resp = client.get("/api/cupcakes")
+    def test_list_cupcakes(self):
+        with app.test_client() as client:
+            resp = client.get("/api/cupcakes")
 
-    #         self.assertEqual(resp.status_code, 200)
+            self.assertEqual(resp.status_code, 200)
 
-    #         data = resp.json
-    #         self.assertEqual(data, {
-    #             "cupcakes": [
-    #                 {
-    #                     "id": self.cupcake.id,
-    #                     "flavor": "TestFlavor",
-    #                     "size": "TestSize",
-    #                     "rating": 5,
-    #                     "image": "http://test.com/cupcake.jpg"
-    #                 }
-    #             ]
-    #         })
+            data = resp.json
+            self.assertEqual(data, {
+                "cupcakes": [
+                    {
+                        "id": self.cupcake.id,
+                        "flavor": "TestFlavor",
+                        "size": "TestSize",
+                        "rating": 5,
+                        "image": "http://test.com/cupcake.jpg"
+                    }
+                ]
+            })
 
-    # def test_get_cupcake(self):
-    #     with app.test_client() as client:
-    #         url = f"/api/cupcakes/{self.cupcake.id}"
-    #         resp = client.get(url)
+    def test_get_cupcake(self):
+        with app.test_client() as client:
+            url = f"/api/cupcakes/{self.cupcake.id}"
+            resp = client.get(url)
 
-    #         self.assertEqual(resp.status_code, 200)
-    #         data = resp.json
-    #         self.assertEqual(data, {
-    #             "cupcake": {
-    #                 "id": self.cupcake.id,
-    #                 "flavor": "TestFlavor",
-    #                 "size": "TestSize",
-    #                 "rating": 5,
-    #                 "image": "http://test.com/cupcake.jpg"
-    #             }
-    #         })
+            self.assertEqual(resp.status_code, 200)
+            data = resp.json
+            self.assertEqual(data, {
+                "cupcake": {
+                    "id": self.cupcake.id,
+                    "flavor": "TestFlavor",
+                    "size": "TestSize",
+                    "rating": 5,
+                    "image": "http://test.com/cupcake.jpg"
+                }
+            })
 
-    # def test_create_cupcake(self):
-    #     with app.test_client() as client:
-    #         url = "/api/cupcakes"
-    #         resp = client.post(url, json=CUPCAKE_DATA_2)
+    def test_create_cupcake(self):
+        with app.test_client() as client:
+            url = "/api/cupcakes"
+            resp = client.post(url, json=CUPCAKE_DATA_2)
 
-    #         self.assertEqual(resp.status_code, 201)
+            self.assertEqual(resp.status_code, 201)
 
-    #         data = resp.json
+            data = resp.json
 
-    #         # don't know what ID we'll get, make sure it's an int & normalize
-    #         self.assertIsInstance(data['cupcake']['id'], int)
-    #         del data['cupcake']['id']
+            # don't know what ID we'll get, make sure it's an int & normalize
+            self.assertIsInstance(data['cupcake']['id'], int)
+            del data['cupcake']['id']
 
-    #         self.assertEqual(data, {
-    #             "cupcake": {
-    #                 "flavor": "TestFlavor2",
-    #                 "size": "TestSize2",
-    #                 "rating": 10,
-    #                 "image": "http://test.com/cupcake2.jpg"
-    #             }
-    #         })
+            self.assertEqual(data, {
+                "cupcake": {
+                    "flavor": "TestFlavor2",
+                    "size": "TestSize2",
+                    "rating": 10,
+                    "image": "http://test.com/cupcake2.jpg"
+                }
+            })
 
-    #         self.assertEqual(Cupcake.query.count(), 2)
+            self.assertEqual(Cupcake.query.count(), 2)
 
     def test_update_cupcake(self):
         with app.test_client() as client:
@@ -125,6 +125,7 @@ class CupcakeViewsTestCase(TestCase):
             
             self.assertEqual(data, {
                 "cupcake": {
+                    'id': self.cupcake.id,
                     "flavor": "Rasberry",
                     "size": "x-large",
                     "rating": 5.0,
@@ -133,13 +134,10 @@ class CupcakeViewsTestCase(TestCase):
             })
             
             
-            # self.assertIsInstance(data['cupcake']['id'], int)
-            # del data['cupcake']['id']
+    def test_delete_cupcake(self):
+        with app.test_client() as client:
+            url = f"/api/cupcakes/{self.cupcake.id}"
+            resp = client.delete(url, json=CUPCAKE_DATA)
             
-    # def test_delete_cupcake(self):
-    #     with app.test_client() as client:
-    #         url = f"/api/cupcakes/{self.cupcake.id}"
-    #         resp = client.delete(url, json=CUPCAKE_DATA)
-            
-    #         self.assertEqual(resp.status_code, 200)
-    #         self.assertEqual(Cupcake.query.count(), 0)
+            self.assertEqual(resp.status_code, 200)
+            self.assertEqual(Cupcake.query.count(), 0)
