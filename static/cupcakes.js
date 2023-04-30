@@ -2,10 +2,10 @@ const BASE_URL = "http://127.0.0.1:5000/api";
 
 function generateCupcakeHTML(cupcake) {
   return `
-    <div data-cupcake-id=${cupcake.id}>
+    <div data-id=${cupcake.id}>
       <li>
         ${cupcake.flavor} / ${cupcake.size} / ${cupcake.rating}
-        <button class="delete-button btn-lrg btn-danger text-center">Delete</button>
+        <button class="delete-cupcake btn-lrg btn-danger text-center">Delete</button>
       </li>
       <img class="border rounded border-dark border-3 mg-fluid Cupcake-img"
             src="${cupcake.image}"
@@ -18,14 +18,17 @@ function generateCupcakeHTML(cupcake) {
 
 /** put initial cupcakes on page. */
 
-// async function showInitialCupcakes() {
-//   const response = await axios.get(`${BASE_URL}/cupcakes`);
+async function showInitialCupcakes() {
+  const response = await axios.get(`${BASE_URL}/cupcakes`);
 
-//   for (let cupcakeData of response.data.cupcakes) {
-//     let newCupcake = $(generateCupcakeHTML(cupcakeData));
-//     $("#cupcakes-list").append(newCupcake);
-//   }
-// }
+  for (let cupcakeData of response.data.cupcakes) {
+    // console.log(response.data.cupcakes)
+    // this is simply a for loop that  is taking each indiviual cupcake out of all cupcakes in the db and genderating the html for them adn then appending these to page. 
+    let newCupcake = $(generateCupcakeHTML(cupcakeData));
+    $("#cupcakes-list").append(newCupcake);
+  }
+}
+// not sure if I am not supposed to be adding the original cupcakes through the html..... ? instructions did not seem clear on this. I believe we are supposed to be doing this through tghe JS... leaving both just one commented out due to that fact. 
 
 
 /** handle form for adding of new cupcakes */
@@ -37,6 +40,7 @@ $("#new-cupcake-form").on("submit", async function (evt) {
   let rating = $("#rating").val();
   let size = $("#size").val();
   let image = $("#image").val();
+  // obtaining values from form
 
   const newCupcakeResponse = await axios.post(`${BASE_URL}/cupcakes`, {
     flavor,
@@ -46,58 +50,36 @@ $("#new-cupcake-form").on("submit", async function (evt) {
   });
 
   let newCupcake = $(generateCupcakeHTML(newCupcakeResponse.data.cupcake));
+  // generating the html for the new cupcake
   $("#cupcakes-list").append(newCupcake);
+  // appending to new cupcake to page.
   $("#new-cupcake-form").trigger("reset");
+  // resting the form to add new cupcake.
 });
 
 
-/** handle clicking delete: delete cupcake */
-
-// $("#cupcakes-list").on("click", ".delete-button", async function (evt) {
-//   evt.preventDefault();
-//   let $cupcake = $(evt.target).closest("div");
-//   let cupcakeId = $cupcake.attr("data-cupcake-id");
-
-//   await axios.delete(`${BASE_URL}/cupcakes/${cupcakeId}`);
-//   $cupcake.remove();
-// });
-
-// ------------------------------------------
-// my delete function
-
-$('.delete-cupcake').click(deleteCupcake)
-
-async function deleteCupcake(evt) {
-  // const id = $(this).data('id')
-  // console.log(id)
-  // await axios.delete(`/api/cupcakes/${id}`)
-  // $(this).parent().remove()
+$("#cupcakes-list").on("click", async function (evt) {
+  // note you have to have an id here to get this to funciton with dynamically appended html
   evt.preventDefault();
+  // alert("you clicked delete button")
   let $cupcake = $(evt.target).closest("div");
   let cupcakeId = $cupcake.attr("data-id");
   await axios.delete(`${BASE_URL}/cupcakes/${cupcakeId}`);
   $cupcake.remove();
-}
+})
 
 
+// $('.delete-cupcake').click(deleteCupcake)
 
-// $(showInitialCupcakes);
+// async function deleteCupcake(evt) {
+//   alert("you clicked delete button")
+//   evt.preventDefault();
+//   let $cupcake = $(evt.target).closest("div");
+//   let cupcakeId = $cupcake.attr("data-id");
+//   await axios.delete(`${BASE_URL}/cupcakes/${cupcakeId}`);
+//   $cupcake.remove();
+// }
+// note that this works for the delete button when it is appending through the html and not through the javascript 
 
-// $('.submit-cupcake').click(addCupcake)
-    
-// async function addCupcakeHTML(cupcake) {
-
-    // let form = document.getElementById("example-form");
-    //          let formData = new FormData(form);
-    //          let csrf_token = document.getElementById("csrf_token").value
-    //          formData.append("csrf_token", csrf_token)
-    //          fetch("{{ url_for('index') }}", {
-    //              method: "post",
-    //              body: formData
-    //          })
-    //              .then(response => response.json())
-    //              .then(response => {
-    //                  console.log(response["data"]);
-    // alert("You have clicked submit cupcake")
-    // await axios.delete(`/api/todos/${id}`)
-    // $(this).parent().remove()
+// this is calling the show initial cupcakes so they load immediately. 
+$(showInitialCupcakes);
